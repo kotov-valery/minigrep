@@ -2,29 +2,23 @@ use std::env;
 use std::error::Error;
 use std::fs;
 
+use clap::Parser;
+
+/// Search for a pattern in a file
+#[derive(Parser, Debug)]
+#[command(about, version, long_about = None)]
 pub struct Config {
+    /// Pattern to search for
+    #[arg(short, long)]
     pub query: String,
+
+    /// Path to a file to search in
+    #[arg(short, long)]
     pub file_path: String,
+
+    /// Case sensitive or case insensitive search
+    #[arg(short, long, default_value_t = false)]
     pub ignore_case: bool,
-}
-
-impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("Not enough arguments");
-        }
-
-        let query = args[1].clone();
-        let file_path = args[2].clone();
-
-        let ignore_case = env::var("IGNORE_CASE").is_ok();
-
-        Ok(Config {
-            query,
-            file_path,
-            ignore_case,
-        })
-    }
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
